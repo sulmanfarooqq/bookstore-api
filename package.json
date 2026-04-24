@@ -1,0 +1,48 @@
+{
+  "name": "bookstore-api",
+  "version": "1.0.0",
+  "description": "Production-ready RESTful API for a bookstore built with Node.js, Express, and MongoDB.",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "test": "jest --runInBand --detectOpenHandles",
+    "test:watch": "jest --watch",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "mongodb",
+    "mongoose",
+    "rest-api",
+    "bookstore"
+  ],
+  "author": "Sulman",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "compression": "^1.8.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.4.0",
+    "express-validator": "^7.3.2",
+    "helmet": "^8.1.0",
+    "hpp": "^0.2.3",
+    "mongoose": "^9.5.0",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "eslint": "^10.2.1",
+    "jest": "^30.3.0",
+    "mongodb-memory-server": "^11.0.1",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.2.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}

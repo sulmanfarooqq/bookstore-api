@@ -1,0 +1,117 @@
+{
+  "info": {
+    "name": "Bookstore API",
+    "_postman_id": "728a7584-13cf-47b3-aa1b-5b42eb0e7d17",
+    "description": "Postman collection for the Bookstore REST API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Create Book",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Atomic Habits\",\n  \"author\": \"James Clear\",\n  \"price\": 20,\n  \"isbn\": \"1234567890123\",\n  \"publishedDate\": \"2018-10-16\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/books",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "books"]
+        }
+      }
+    },
+    {
+      "name": "Get All Books",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/books?page=1&limit=10&search=atomic&sortBy=title&order=asc",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "books"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "limit", "value": "10" },
+            { "key": "search", "value": "atomic" },
+            { "key": "sortBy", "value": "title" },
+            { "key": "order", "value": "asc" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Book By ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/books/{{bookId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "books", "{{bookId}}"]
+        }
+      }
+    },
+    {
+      "name": "Update Book",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"price\": 25\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/books/{{bookId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "books", "{{bookId}}"]
+        }
+      }
+    },
+    {
+      "name": "Delete Book",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/books/{{bookId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "v1", "books", "{{bookId}}"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000"
+    },
+    {
+      "key": "bookId",
+      "value": "replace-with-real-book-id"
+    }
+  ]
+}

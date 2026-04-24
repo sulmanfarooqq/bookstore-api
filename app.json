@@ -1,0 +1,17 @@
+{
+  "name": "bookstore-api",
+  "description": "Production-ready RESTful API for a bookstore",
+  "repository": "https://github.com/your-username/bookstore-api",
+  "keywords": ["node", "express", "mongodb", "bookstore", "api"],
+  "env": {
+    "NODE_ENV": {
+      "value": "production"
+    },
+    "MONGODB_URI": {
+      "description": "MongoDB connection string"
+    },
+    "PORT": {
+      "value": "5000"
+    }
+  }
+}
