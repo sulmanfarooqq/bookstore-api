@@ -92,14 +92,21 @@ Railway:
 https://your-service.up.railway.app/api/v1
 ```
 
+Compatibility routes matching the internship rubric are also available:
+
+```text
+http://localhost:5000/books
+https://your-service.up.railway.app/books
+```
+
 ## Endpoints
 
 - `GET /health`
-- `POST /api/v1/books`
-- `GET /api/v1/books`
-- `GET /api/v1/books/:id`
-- `PUT /api/v1/books/:id`
-- `DELETE /api/v1/books/:id`
+- `POST /books` or `POST /api/v1/books`
+- `GET /books` or `GET /api/v1/books`
+- `GET /books/:id` or `GET /api/v1/books/:id`
+- `PUT /books/:id` or `PUT /api/v1/books/:id`
+- `DELETE /books/:id` or `DELETE /api/v1/books/:id`
 
 ## Testing
 

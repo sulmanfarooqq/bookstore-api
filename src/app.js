@@ -51,6 +51,7 @@ app.get('/health', (_req, res) => {
   });
 });
 
+app.use('/', routes);
 app.use('/api/v1', routes);
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
