@@ -12,6 +12,12 @@ const { sanitizeRequest } = require('./middlewares/sanitize.middleware');
 
 const app = express();
 
+const allowedOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean)
+  : ['*'];
+
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 200,
@@ -23,10 +29,11 @@ const apiLimiter = rateLimit({
   }
 });
 
+app.set('trust proxy', 1);
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL ? [process.env.CLIENT_URL] : '*'
+    origin: allowedOrigins.includes('*') ? '*' : allowedOrigins
   })
 );
 app.use(morgan(process.env.LOG_LEVEL || 'dev'));

@@ -3,16 +3,20 @@ const mongoose = require('mongoose');
 const { Book } = require('../models/book.model');
 const { ApiError } = require('../utils/api-error');
 
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 const buildQuery = ({ search }) => {
   if (!search) {
     return {};
   }
 
+  const escapedSearch = escapeRegex(search);
+
   return {
     $or: [
-      { title: { $regex: search, $options: 'i' } },
-      { author: { $regex: search, $options: 'i' } },
-      { isbn: { $regex: search, $options: 'i' } }
+      { title: { $regex: escapedSearch, $options: 'i' } },
+      { author: { $regex: escapedSearch, $options: 'i' } },
+      { isbn: { $regex: escapedSearch, $options: 'i' } }
     ]
   };
 };

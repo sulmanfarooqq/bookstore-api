@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const { disconnectDatabase } = require('../../src/config/database');
 
 let mongoServer;
 
@@ -9,6 +10,10 @@ beforeAll(async () => {
 });
 
 afterEach(async () => {
+  if (mongoose.connection.readyState !== 1) {
+    return;
+  }
+
   const collections = mongoose.connection.collections;
 
   await Promise.all(
@@ -17,6 +22,9 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-  await mongoose.connection.close();
-  await mongoServer.stop();
+  await disconnectDatabase();
+
+  if (mongoServer) {
+    await mongoServer.stop();
+  }
 });

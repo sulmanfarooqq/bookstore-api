@@ -1,6 +1,6 @@
 # Bookstore API
 
-A production-oriented RESTful API for managing bookstore inventory with Node.js, Express, and MongoDB. The project includes validation, centralized error handling, pagination, search, security middleware, automated tests, and Heroku-ready deployment files.
+A production-oriented RESTful API for managing bookstore inventory with Node.js, Express, and MongoDB. The project includes validation, centralized error handling, pagination, search, security middleware, automated tests, and a Railway-ready deployment configuration.
 
 ## Features
 
@@ -10,7 +10,7 @@ A production-oriented RESTful API for managing bookstore inventory with Node.js,
 - Search, pagination, and sorting on the list endpoint
 - Security middleware with `helmet`, rate limiting, sanitization, and `hpp`
 - Automated integration tests using Jest, Supertest, and in-memory MongoDB
-- Deployment files for Heroku-style platforms
+- Railway healthcheck and startup config in `railway.json`
 
 ## Project Structure
 
@@ -30,21 +30,13 @@ bookstore-api/
 |   `-- server.js
 |-- tests/
 |-- .env.example
-|-- Procfile
 |-- app.json
 |-- eslint.config.js
 |-- jest.config.js
+|-- Procfile
+|-- railway.json
 `-- package.json
 ```
-
-## Tech Stack
-
-- Node.js
-- Express.js
-- MongoDB
-- Mongoose
-- Jest
-- Supertest
 
 ## Getting Started
 
@@ -66,6 +58,14 @@ LOG_LEVEL=dev
 CLIENT_URL=http://localhost:3000
 ```
 
+If you want to allow multiple frontends, set `CLIENT_URL` as a comma-separated list:
+
+```env
+CLIENT_URL=http://localhost:3000,https://your-frontend.example
+```
+
+Use `CLIENT_URL=*` only if you intentionally want public cross-origin access.
+
 ### 3. Run locally
 
 ```bash
@@ -80,116 +80,83 @@ npm start
 
 ## API Base URL
 
+Local:
+
 ```text
 http://localhost:5000/api/v1
 ```
 
-## Endpoints
-
-### Health Check
-
-`GET /health`
-
-### Create a Book
-
-`POST /api/v1/books`
-
-Request body:
-
-```json
-{
-  "title": "Atomic Habits",
-  "author": "James Clear",
-  "price": 20,
-  "isbn": "1234567890123",
-  "publishedDate": "2018-10-16"
-}
-```
-
-### Get All Books
-
-`GET /api/v1/books`
-
-Optional query params:
-
-- `page`
-- `limit`
-- `search`
-- `sortBy`
-- `order`
-
-Example:
+Railway:
 
 ```text
-GET /api/v1/books?page=1&limit=10&search=atomic&sortBy=title&order=asc
+https://your-service.up.railway.app/api/v1
 ```
 
-### Get One Book
+## Endpoints
 
-`GET /api/v1/books/:id`
-
-### Update a Book
-
-`PUT /api/v1/books/:id`
-
-Example request body:
-
-```json
-{
-  "price": 25
-}
-```
-
-### Delete a Book
-
-`DELETE /api/v1/books/:id`
-
-## Sample Success Response
-
-```json
-{
-  "status": "success",
-  "message": "Book fetched successfully",
-  "data": {
-    "title": "Atomic Habits",
-    "author": "James Clear",
-    "price": 20,
-    "isbn": "1234567890123",
-    "publishedDate": "2018-10-16T00:00:00.000Z",
-    "createdAt": "2026-04-24T13:00:00.000Z",
-    "updatedAt": "2026-04-24T13:00:00.000Z",
-    "id": "680a354dc01f6fabcd123456"
-  }
-}
-```
+- `GET /health`
+- `POST /api/v1/books`
+- `GET /api/v1/books`
+- `GET /api/v1/books/:id`
+- `PUT /api/v1/books/:id`
+- `DELETE /api/v1/books/:id`
 
 ## Testing
-
-Run the automated test suite:
 
 ```bash
 npm test
 ```
 
-## Deployment Notes
+## Deploy On Railway
 
-This repository includes:
+### Current Railway note
 
-- `Procfile` for process startup
-- `app.json` for app metadata
-- `PORT` support through environment variables
-- Production-safe startup via `npm start`
+Railway currently offers a `Free` plan with limited monthly credit, plus a 30-day trial for new users. Verify the latest limits in Railway pricing before deploying production traffic.
 
-To deploy, set the required environment variables in your platform dashboard:
+### 1. Create a MongoDB database
+
+Railway can host the API process, but this project still needs a MongoDB instance. Use either:
+
+- MongoDB Atlas free tier
+- A Railway MongoDB service, if you prefer keeping infra in one platform
+
+Set `MONGODB_URI` to the final connection string.
+
+### 2. Push the repo to GitHub
+
+Railway’s simplest flow is GitHub-based deploys.
+
+### 3. Create a Railway project
+
+In Railway:
+
+1. Create a new project
+2. Choose `Deploy from GitHub repo`
+3. Select this repository
+
+Railway should detect the Node app automatically because `package.json` contains `npm start`.
+
+### 4. Configure variables
+
+In the Railway service variables, set:
 
 - `NODE_ENV=production`
 - `MONGODB_URI=<your-production-mongodb-uri>`
-- `PORT=<provided-by-platform>`
+- `LOG_LEVEL=combined`
+- `CLIENT_URL=<your-frontend-domain>` or `*`
 
-## Suggested Submission Extras
+Do not hardcode `PORT`. Railway injects it automatically and this app already respects it.
 
-- Add a Postman collection export
-- Push the repository to GitHub
-- Deploy to Heroku, Render, or Railway
+### 5. Generate a public domain
 
-Postman collection included: `postman_collection.json`
+Open the service settings and generate a Railway domain so the API is publicly reachable.
+
+### 6. Healthcheck
+
+This repo includes `railway.json` with `/health` as the deploy healthcheck path. Railway will wait for a `200` response before routing traffic to a new deployment.
+
+## Production Notes
+
+- `app.set('trust proxy', 1)` is enabled so rate limiting works correctly behind Railway’s proxy layer.
+- Search input is escaped before becoming a MongoDB regex, which avoids malformed-pattern and regex abuse issues.
+- The API starts listening only after MongoDB connects, so failed database bootstraps will fail the deploy instead of serving a half-ready app.
